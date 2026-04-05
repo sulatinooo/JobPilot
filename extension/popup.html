@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <h1>Job Application Agent</h1>
+    <p>AI-Powered Resume Tailoring & Auto-Fill</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="analyze">Analyze</div>
+    <div class="tab" data-tab="profile">Profile</div>
+    <div class="tab" data-tab="resume">Resume</div>
+  </div>
+
+  <!-- ANALYZE TAB -->
+  <div id="analyze" class="tab-content active">
+    <button id="analyzeBtn" class="btn btn-primary">Analyze This Job Posting</button>
+    
+    <div id="results" class="hidden">
+      <div class="gauge-container">
+        <div class="gauge">
+          <div class="gauge-bg"></div>
+          <div class="gauge-inner"></div>
+          <div class="gauge-needle" id="needle"></div>
+        </div>
+        <div class="gauge-label" id="validityLabel">Analyzing...</div>
+        <div class="gauge-score" id="validityScore"></div>
+      </div>
+
+      <div id="keywordsSection" class="section hidden">
+        <h3>Extracted Keywords</h3>
+        <div id="keywordsList" class="keywords"></div>
+      </div>
+
+      <div id="resumeSection" class="section hidden">
+        <h3>Tailored Resume</h3>
+        <button id="downloadBtn" class="btn btn-secondary">Download PDF</button>
+        <button id="copyBtn" class="btn btn-secondary">Copy LaTeX</button>
+      </div>
+
+      <div id="fillSection" class="section hidden">
+        <button id="fillBtn" class="btn btn-primary">Auto-Fill Application</button>
+      </div>
+    </div>
+
+    <div id="loading" class="hidden">
+      <div class="spinner"></div>
+      <p id="loadingText">Processing...</p>
+    </div>
+
+    <div id="error" class="hidden">
+      <p id="errorText"></p>
+    </div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div id="profile" class="tab-content">
+    <h3 style="color:#4fc3f7;margin-bottom:12px;font-size:13px;">Personal Info</h3>
+    <div class="field">
+      <label>First Name</label>
+      <input type="text" id="firstName" placeholder="Sultan">
+    </div>
+    <div class="field">
+      <label>Last Name</label>
+      <input type="text" id="lastName" placeholder="...">
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="you@email.com">
+    </div>
+    <div class="field">
+      <label>Phone</label>
+      <input type="tel" id="phone" placeholder="6592538966">
+    </div>
+    <div class="field">
+      <label>LinkedIn URL</label>
+      <input type="url" id="linkedin" placeholder="https://linkedin.com/in/...">
+    </div>
+    <div class="field">
+      <label>GitHub URL</label>
+      <input type="url" id="github" placeholder="https://github.com/...">
+    </div>
+
+    <h3 style="color:#4fc3f7;margin:16px 0 12px;font-size:13px;">Location</h3>
+    <div class="field">
+      <label>City</label>
+      <input type="text" id="city" placeholder="Tempe">
+    </div>
+    <div class="field">
+      <label>State</label>
+      <input type="text" id="state" placeholder="Arizona">
+    </div>
+    <div class="field">
+      <label>Country</label>
+      <input type="text" id="country" placeholder="United States">
+    </div>
+
+    <h3 style="color:#4fc3f7;margin:16px 0 12px;font-size:13px;">Education</h3>
+    <div class="field">
+      <label>School</label>
+      <input type="text" id="school" placeholder="Arizona State University">
+    </div>
+    <div class="field">
+      <label>Degree</label>
+      <input type="text" id="degree" placeholder="Bachelor's Degree">
+    </div>
+    <div class="field">
+      <label>Discipline / Major</label>
+      <input type="text" id="discipline" placeholder="Computer Science">
+    </div>
+    <div class="field">
+      <label>Start Month</label>
+      <input type="text" id="startMonth" placeholder="August">
+    </div>
+    <div class="field">
+      <label>Start Year</label>
+      <input type="text" id="startYear" placeholder="2022">
+    </div>
+    <div class="field">
+      <label>End Month</label>
+      <input type="text" id="endMonth" placeholder="May">
+    </div>
+    <div class="field">
+      <label>End Year</label>
+      <input type="text" id="endYear" placeholder="2026">
+    </div>
+
+    <h3 style="color:#4fc3f7;margin:16px 0 12px;font-size:13px;">Work Authorization</h3>
+    <div class="field">
+      <label>Authorized to work in US?</label>
+      <select id="workAuth">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Requires Sponsorship?</label>
+      <select id="sponsorship">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Will you be a student after internship?</label>
+      <select id="returningStudent">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Previously worked at this company?</label>
+      <select id="previouslyWorked">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+    </div>
+
+    <button id="saveProfile" class="btn btn-primary">Save Profile</button>
+    <div id="profileSaved" class="hidden success-msg">Profile saved!</div>
+  </div>
+
+  <!-- RESUME TAB -->
+  <div id="resume" class="tab-content">
+    <div class="field">
+      <label>Paste your LaTeX resume below</label>
+      <textarea id="resumeLatex" rows="15" placeholder="Paste your full LaTeX resume here..."></textarea>
+    </div>
+    <button id="saveResume" class="btn btn-primary">Save Resume</button>
+    <div id="resumeSaved" class="hidden success-msg">Resume saved!</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

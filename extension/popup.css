@@ -1,0 +1,231 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 400px;
+  min-height: 500px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #0f0f0f;
+  color: #e0e0e0;
+}
+
+.header {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  padding: 16px;
+  text-align: center;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+.header h1 { font-size: 18px; color: #fff; margin-bottom: 4px; }
+.header p { font-size: 11px; color: #888; }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
+  color: #888;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab.active {
+  color: #4fc3f7;
+  border-bottom-color: #4fc3f7;
+}
+
+.tab-content { display: none; padding: 16px; }
+.tab-content.active { display: block; }
+
+/* Gauge */
+.gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.gauge {
+  width: 200px;
+  height: 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.gauge-bg {
+  width: 200px;
+  height: 200px;
+  border-radius: 100px 100px 0 0;
+  background: conic-gradient(from 180deg, #ef5350 0deg, #ff9800 90deg, #4caf50 180deg);
+  position: absolute;
+  bottom: 0;
+}
+
+.gauge-inner {
+  width: 140px;
+  height: 140px;
+  border-radius: 70px 70px 0 0;
+  background: #0f0f0f;
+  position: absolute;
+  bottom: 0;
+  left: 30px;
+}
+
+.gauge-needle {
+  width: 4px;
+  height: 80px;
+  background: #fff;
+  position: absolute;
+  bottom: 0;
+  left: 98px;
+  transform-origin: bottom center;
+  transform: rotate(-90deg);
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
+}
+
+.gauge-label {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gauge-score {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 8px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4fc3f7, #2196f3);
+  color: #fff;
+}
+
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-secondary {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid #3a3a3a;
+}
+
+.btn-secondary:hover { background: #3a3a3a; }
+
+/* Form Fields */
+.field { margin-bottom: 12px; }
+
+.field label {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field input, .field textarea, .field select {
+  width: 100%;
+  padding: 10px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.field textarea {
+  resize: vertical;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+}
+
+.field select {
+  appearance: auto;
+}
+
+/* Keywords */
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.keyword-tag {
+  background: #1a2a3a;
+  color: #4fc3f7;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+/* Sections */
+.section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #2a2a2a;
+}
+
+.section h3 {
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+
+/* Utilities */
+.hidden { display: none !important; }
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #2a2a2a;
+  border-top-color: #4fc3f7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.success-msg {
+  text-align: center;
+  color: #4caf50;
+  font-size: 13px;
+  margin-top: 8px;
+  padding: 8px;
+}
+
+#loading { text-align: center; }
+#loading p { color: #888; font-size: 13px; margin-top: 8px; }
+
+#error { 
+  background: #2a1a1a;
+  border: 1px solid #ef5350;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+#error p { color: #ef5350; font-size: 13px; }
