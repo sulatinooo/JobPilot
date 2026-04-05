@@ -2,14 +2,256 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="popup.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 400px;
+      min-height: 500px;
+      font-family: 'Outfit', -apple-system, sans-serif;
+      background: #08080f;
+      color: #e0e0e0;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, #0f0f1a 0%, #141428 100%);
+      padding: 16px 18px;
+      border-bottom: 1px solid #1e1e35;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header img {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+    }
+
+    .header-text h1 {
+      font-size: 19px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #7c6cf0, #4ea0f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    .header-text p {
+      font-size: 10.5px;
+      color: #5a5772;
+      margin-top: 1px;
+    }
+
+    /* ===== TABS ===== */
+    .tabs {
+      display: flex;
+      background: #0c0c16;
+      border-bottom: 1px solid #1e1e35;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #5a5772;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab:hover { color: #8b87a0; }
+    .tab.active { color: #7c6cf0; border-bottom-color: #7c6cf0; }
+
+    .tab-content { display: none; padding: 16px; }
+    .tab-content.active { display: block; }
+
+    /* ===== GAUGE ===== */
+    .gauge-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0 8px;
+    }
+
+    #gaugeClipPath {
+      transition: d 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .gauge-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 220px;
+      margin-top: 2px;
+    }
+
+    .gauge-labels span {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .validity-result {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .validity-text {
+      font-size: 15px;
+      font-weight: 600;
+      transition: color 0.5s;
+    }
+
+    .validity-score {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #5a5772;
+      margin-top: 3px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      width: 100%;
+      padding: 11px 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7c6cf0, #4ea0f7);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(124, 108, 240, 0.2);
+    }
+
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124, 108, 240, 0.3); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-secondary {
+      background: #12121f;
+      color: #e0e0e0;
+      border: 1px solid #1e1e35;
+    }
+
+    .btn-secondary:hover { border-color: #7c6cf0; background: rgba(124,108,240,0.05); }
+
+    /* ===== FIELDS ===== */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #7c6cf0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 14px 0 10px;
+    }
+
+    .section-label:first-child { margin-top: 0; }
+
+    .field { margin-bottom: 10px; }
+
+    .field label {
+      display: block;
+      font-size: 10px;
+      color: #8b87a0;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      font-weight: 500;
+    }
+
+    .field input, .field textarea, .field select {
+      width: 100%;
+      padding: 9px 11px;
+      background: #0d0d18;
+      border: 1px solid #1e1e35;
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 13px;
+      font-family: 'Outfit', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: #7c6cf0;
+      box-shadow: 0 0 0 2px rgba(124,108,240,0.12);
+    }
+
+    .field textarea {
+      resize: vertical;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .field select { appearance: auto; }
+
+    /* ===== KEYWORDS ===== */
+    .keywords { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+
+    .keyword-tag {
+      background: rgba(124,108,240,0.1);
+      color: #9d90f7;
+      padding: 3px 10px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid rgba(124,108,240,0.12);
+    }
+
+    /* ===== SECTIONS ===== */
+    .section { margin-top: 14px; padding-top: 14px; border-top: 1px solid #1e1e35; }
+    .section h3 { font-size: 11px; color: #8b87a0; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+
+    /* ===== UTILITIES ===== */
+    .hidden { display: none !important; }
+
+    .spinner {
+      width: 26px; height: 26px;
+      border: 3px solid #1e1e35;
+      border-top-color: #7c6cf0;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .success-msg { text-align: center; color: #4caf50; font-size: 13px; margin-top: 8px; padding: 8px; font-weight: 500; }
+
+    #loading { text-align: center; padding: 16px 0; }
+    #loading p { color: #5a5772; font-size: 13px; margin-top: 4px; }
+
+    #error { background: rgba(239,83,80,0.06); border: 1px solid rgba(239,83,80,0.18); border-radius: 10px; padding: 12px; margin-top: 12px; }
+    #error p { color: #ef5350; font-size: 13px; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1e1e35; border-radius: 10px; }
+  </style>
 </head>
 <body>
+
+  <!-- HEADER -->
   <div class="header">
-    <h1>Job Application Agent</h1>
-    <p>AI-Powered Resume Tailoring & Auto-Fill</p>
+    <img src="icons/icon48.png" alt="" onerror="this.style.display='none'">
+    <div class="header-text">
+      <h1>JobPilot</h1>
+      <p>AI-Powered Resume Tailoring &amp; Auto-Fill</p>
+    </div>
   </div>
 
+  <!-- TABS -->
   <div class="tabs">
     <div class="tab active" data-tab="analyze">Analyze</div>
     <div class="tab" data-tab="profile">Profile</div>
@@ -19,29 +261,58 @@
   <!-- ANALYZE TAB -->
   <div id="analyze" class="tab-content active">
     <button id="analyzeBtn" class="btn btn-primary">Analyze This Job Posting</button>
-    
+
     <div id="results" class="hidden">
+      <!-- Semi-Circle Bar Gauge -->
       <div class="gauge-container">
-        <div class="gauge">
-          <div class="gauge-bg"></div>
-          <div class="gauge-inner"></div>
-          <div class="gauge-needle" id="needle"></div>
+        <svg width="240" height="130" viewBox="0 0 240 130">
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ef5350"/>
+              <stop offset="30%" stop-color="#ff5722"/>
+              <stop offset="50%" stop-color="#ff9800"/>
+              <stop offset="70%" stop-color="#ffc107"/>
+              <stop offset="100%" stop-color="#4caf50"/>
+            </linearGradient>
+            <clipPath id="gaugeClip">
+              <path id="gaugeClipPath" d="M 20 120 A 100 100 0 0 1 20 120"/>
+            </clipPath>
+          </defs>
+          <!-- Background track -->
+          <path d="M 20 120 A 100 100 0 0 1 220 120"
+                fill="none" stroke="#1e1e35" stroke-width="22" stroke-linecap="round"/>
+          <!-- Colored fill bar -->
+          <path d="M 20 120 A 100 100 0 0 1 220 120"
+                fill="none" stroke="url(#gaugeGrad)" stroke-width="22" stroke-linecap="round"
+                clip-path="url(#gaugeClip)"/>
+          <!-- Glow dot -->
+          <circle id="gaugeDot" cx="20" cy="120" r="7" fill="#fff" opacity="0"
+                  style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.9)); transition: all 1.4s cubic-bezier(0.4, 0, 0.2, 1);"/>
+        </svg>
+        <div class="gauge-labels">
+          <span style="color:#ef5350;">Scam</span>
+          <span style="color:#4caf50;">Legit</span>
         </div>
-        <div class="gauge-label" id="validityLabel">Analyzing...</div>
-        <div class="gauge-score" id="validityScore"></div>
+        <div class="validity-result">
+          <div class="validity-text" id="validityLabel">Analyzing...</div>
+          <div class="validity-score" id="validityScore"></div>
+        </div>
       </div>
 
+      <!-- Keywords -->
       <div id="keywordsSection" class="section hidden">
         <h3>Extracted Keywords</h3>
         <div id="keywordsList" class="keywords"></div>
       </div>
 
+      <!-- Tailored Resume -->
       <div id="resumeSection" class="section hidden">
         <h3>Tailored Resume</h3>
         <button id="downloadBtn" class="btn btn-secondary">Download PDF</button>
         <button id="copyBtn" class="btn btn-secondary">Copy LaTeX</button>
       </div>
 
+      <!-- Auto-Fill -->
       <div id="fillSection" class="section hidden">
         <button id="fillBtn" class="btn btn-primary">Auto-Fill Application</button>
       </div>
@@ -59,105 +330,33 @@
 
   <!-- PROFILE TAB -->
   <div id="profile" class="tab-content">
-    <h3 style="color:#4fc3f7;margin-bottom:12px;font-size:13px;">Personal Info</h3>
-    <div class="field">
-      <label>First Name</label>
-      <input type="text" id="firstName" placeholder="Sultan">
-    </div>
-    <div class="field">
-      <label>Last Name</label>
-      <input type="text" id="lastName" placeholder="...">
-    </div>
-    <div class="field">
-      <label>Email</label>
-      <input type="email" id="email" placeholder="you@email.com">
-    </div>
-    <div class="field">
-      <label>Phone</label>
-      <input type="tel" id="phone" placeholder="6592538966">
-    </div>
-    <div class="field">
-      <label>LinkedIn URL</label>
-      <input type="url" id="linkedin" placeholder="https://linkedin.com/in/...">
-    </div>
-    <div class="field">
-      <label>GitHub URL</label>
-      <input type="url" id="github" placeholder="https://github.com/...">
-    </div>
+    <div class="section-label">Personal Info</div>
+    <div class="field"><label>First Name</label><input type="text" id="firstName" placeholder="Sultan"></div>
+    <div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="..."></div>
+    <div class="field"><label>Email</label><input type="email" id="email" placeholder="you@email.com"></div>
+    <div class="field"><label>Phone</label><input type="tel" id="phone" placeholder="6592538966"></div>
+    <div class="field"><label>LinkedIn URL</label><input type="url" id="linkedin" placeholder="https://linkedin.com/in/..."></div>
+    <div class="field"><label>GitHub URL</label><input type="url" id="github" placeholder="https://github.com/..."></div>
 
-    <h3 style="color:#4fc3f7;margin:16px 0 12px;font-size:13px;">Location</h3>
-    <div class="field">
-      <label>City</label>
-      <input type="text" id="city" placeholder="Tempe">
-    </div>
-    <div class="field">
-      <label>State</label>
-      <input type="text" id="state" placeholder="Arizona">
-    </div>
-    <div class="field">
-      <label>Country</label>
-      <input type="text" id="country" placeholder="United States">
-    </div>
+    <div class="section-label">Location</div>
+    <div class="field"><label>City</label><input type="text" id="city" placeholder="Tempe"></div>
+    <div class="field"><label>State</label><input type="text" id="state" placeholder="Arizona"></div>
+    <div class="field"><label>Country</label><input type="text" id="country" placeholder="United States"></div>
 
-    <h3 style="color:#4fc3f7;margin:16px 0 12px;font-size:13px;">Education</h3>
-    <div class="field">
-      <label>School</label>
-      <input type="text" id="school" placeholder="Arizona State University">
-    </div>
-    <div class="field">
-      <label>Degree</label>
-      <input type="text" id="degree" placeholder="Bachelor's Degree">
-    </div>
-    <div class="field">
-      <label>Discipline / Major</label>
-      <input type="text" id="discipline" placeholder="Computer Science">
-    </div>
-    <div class="field">
-      <label>Start Month</label>
-      <input type="text" id="startMonth" placeholder="August">
-    </div>
-    <div class="field">
-      <label>Start Year</label>
-      <input type="text" id="startYear" placeholder="2022">
-    </div>
-    <div class="field">
-      <label>End Month</label>
-      <input type="text" id="endMonth" placeholder="May">
-    </div>
-    <div class="field">
-      <label>End Year</label>
-      <input type="text" id="endYear" placeholder="2026">
-    </div>
+    <div class="section-label">Education</div>
+    <div class="field"><label>School</label><input type="text" id="school" placeholder="Arizona State University"></div>
+    <div class="field"><label>Degree</label><input type="text" id="degree" placeholder="Bachelor's Degree"></div>
+    <div class="field"><label>Discipline / Major</label><input type="text" id="discipline" placeholder="Computer Science"></div>
+    <div class="field"><label>Start Month</label><input type="text" id="startMonth" placeholder="August"></div>
+    <div class="field"><label>Start Year</label><input type="text" id="startYear" placeholder="2022"></div>
+    <div class="field"><label>End Month</label><input type="text" id="endMonth" placeholder="May"></div>
+    <div class="field"><label>End Year</label><input type="text" id="endYear" placeholder="2026"></div>
 
-    <h3 style="color:#4fc3f7;margin:16px 0 12px;font-size:13px;">Work Authorization</h3>
-    <div class="field">
-      <label>Authorized to work in US?</label>
-      <select id="workAuth">
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Requires Sponsorship?</label>
-      <select id="sponsorship">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Will you be a student after internship?</label>
-      <select id="returningStudent">
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Previously worked at this company?</label>
-      <select id="previouslyWorked">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-      </select>
-    </div>
+    <div class="section-label">Work Authorization</div>
+    <div class="field"><label>Authorized to work in US?</label><select id="workAuth"><option value="yes">Yes</option><option value="no">No</option></select></div>
+    <div class="field"><label>Requires Sponsorship?</label><select id="sponsorship"><option value="no">No</option><option value="yes">Yes</option></select></div>
+    <div class="field"><label>Will you be a student after internship?</label><select id="returningStudent"><option value="yes">Yes</option><option value="no">No</option></select></div>
+    <div class="field"><label>Previously worked at this company?</label><select id="previouslyWorked"><option value="no">No</option><option value="yes">Yes</option></select></div>
 
     <button id="saveProfile" class="btn btn-primary">Save Profile</button>
     <div id="profileSaved" class="hidden success-msg">Profile saved!</div>
@@ -165,9 +364,10 @@
 
   <!-- RESUME TAB -->
   <div id="resume" class="tab-content">
+    <div class="section-label">Your LaTeX Resume</div>
     <div class="field">
-      <label>Paste your LaTeX resume below</label>
-      <textarea id="resumeLatex" rows="15" placeholder="Paste your full LaTeX resume here..."></textarea>
+      <label>Paste your full LaTeX resume below</label>
+      <textarea id="resumeLatex" rows="18" placeholder="\documentclass[letterpaper,11pt]{article}&#10;..."></textarea>
     </div>
     <button id="saveResume" class="btn btn-primary">Save Resume</button>
     <div id="resumeSaved" class="hidden success-msg">Resume saved!</div>

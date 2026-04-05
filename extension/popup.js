@@ -101,10 +101,27 @@ function displayResults(result) {
   results.classList.remove('hidden');
 
   // Update gauge
-  if (result.validation) {
+   // Update gauge - animated needle sweep
+     if (result.validation) {
     const confidence = result.validation.confidence || 0;
-    const rotation = -90 + (confidence * 180);
-    document.getElementById('needle').style.transform = `rotate(${rotation}deg)`;
+    const clipPath = document.getElementById('gaugeClipPath');
+    const dot = document.getElementById('gaugeDot');
+
+    const angle = Math.PI * (1 - confidence);
+    const cx = 120 + 100 * Math.cos(angle);
+    const cy = 120 - 100 * Math.sin(angle);
+    const largeArc = confidence > 0.5 ? 1 : 0;
+
+    setTimeout(() => {
+      clipPath.setAttribute('d', `M 20 120 A 100 100 0 ${largeArc} 1 ${cx} ${cy}`);
+      dot.setAttribute('cx', cx);
+      dot.setAttribute('cy', cy);
+      dot.setAttribute('opacity', '1');
+      if (confidence >= 0.6) dot.setAttribute('fill', '#4caf50');
+      else if (confidence >= 0.4) dot.setAttribute('fill', '#ffc107');
+      else dot.setAttribute('fill', '#ef5350');
+    }, 300);
+
     document.getElementById('validityLabel').textContent = result.validation.reason;
     document.getElementById('validityScore').textContent =
       `Score: ${result.validation.score}/${result.validation.max_score}`;
@@ -122,10 +139,14 @@ function displayResults(result) {
     const list = document.getElementById('keywordsList');
     list.innerHTML = '';
     const allKeywords = [
-      ...(result.keywords.required_skills || []),
-      ...(result.keywords.preferred_skills || []),
-      ...(result.keywords.technologies || [])
-    ];
+        ...(result.keywords.hard_skills || []),
+        ...(result.keywords.tools_and_tech || []),
+        ...(result.keywords.domain_keywords || []),
+        ...(result.keywords.soft_skills || []),
+        ...(result.keywords.required_skills || []),
+        ...(result.keywords.preferred_skills || []),
+        ...(result.keywords.technologies || [])
+      ];
     [...new Set(allKeywords)].forEach(kw => {
       const tag = document.createElement('span');
       tag.className = 'keyword-tag';
